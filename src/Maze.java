@@ -23,52 +23,52 @@ public class Maze extends JFrame{
         loadMap(str);
         this.setResizable(false);
         this.setSize((columns*panelSize)+50, (rows*panelSize)+70);
-        this.setTitle("Maze");
+        this.setTitle("My Maze");
         this.setLayout(null);
         
         this.addKeyListener(new KeyListener(){
+        	@Override
+        	public void keyPressed(KeyEvent e) {
+             	int key = e.getKeyCode();
+             	
+             	revalidate();
+             	repaint();
+             	
+             	if(key == KeyEvent.VK_UP){
+             		p.moveUp();	
+             }
+             	if(key == KeyEvent.VK_DOWN){
+             		p.moveDown();	
+             }
+             	if(key == KeyEvent.VK_LEFT){
+             		p.moveLeft();	
+             }
+             	if(key == KeyEvent.VK_RIGHT){
+             		p.moveRight();	
+             }
+             	
+             	if(p.x ==columns-1 && p.y ==endLevelLoc){
+             		JOptionPane.showMessageDialog(null,"Congradulations, you have beaten the level!","End Game",JOptionPane.INFORMATION_MESSAGE);
+             		dispose();
+             		new MainMenu();
+             	}
+             	
+        }
 
 			@Override
-			public void keyPressed(KeyEvent e) {
-				int key = e.getKeyCode();
-				
-				revalidate();
-				repaint();
-				
-				//Player movement
-				if(key == KeyEvent.VK_W){
-					p.moveUp();
-				}
-				if(key == KeyEvent.VK_A){
-					p.moveLeft();
-				}
-				if(key == KeyEvent.VK_S){
-					p.moveDown();
-				}
-				if(key == KeyEvent.VK_D){
-					p.moveRight();
-				}
-				
-				if(p.x == columns-1 && p.y == endLevelLoc){
-					JOptionPane.showMessageDialog(null, "Congratulations, you've beaten the level!", "End Game", JOptionPane.INFORMATION_MESSAGE);
-					dispose();
-					new MainMenu();
-				}
-			}
-
-			@Override
-			public void keyReleased(KeyEvent arg0) {
+			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
 				
 			}
 
 			@Override
-			public void keyTyped(KeyEvent arg0) {
+			public void keyReleased(KeyEvent e) {
 				// TODO Auto-generated method stub
 				
 			}
-        	
-        });
+     });
+        
+       
         
         this.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e) {
@@ -91,7 +91,7 @@ public class Maze extends JFrame{
                 tile.setSize(panelSize, panelSize);
                 tile.setLocation((x*panelSize)+23, (y*panelSize)+25);
                 if(map[x][y] == 0){
-                    tile.setBackground(Color.GRAY);
+                    tile.setBackground(Color.BLACK);
                 }else{
                     tile.setBackground(Color.WHITE);
                     tile.setWall(false);

@@ -1,5 +1,7 @@
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
@@ -8,6 +10,7 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -19,8 +22,53 @@ public class MazeMapMaker extends JFrame{
     ArrayList<String> mapList = new ArrayList<String>();
     int level = 0;
     boolean levelsExistAlready = false;
+    static JButton clearMaze = new JButton("Clear");
+    JButton saveMaze = new JButton("Save");
+    
+    int menuWidth = 100; //Width of each button/item on display
+    int menuHeight = 30;//Height of each button/item on display
+    int menuY = 460; //Button/item location on display
+    int WIDTH = 490;
+    int HEIGHT = 530;
     
     public MazeMapMaker(){
+    	
+    	clearMaze.setSize(menuWidth, menuHeight);
+    	clearMaze.setLocation(450, 525);
+    	this.add(clearMaze);
+    	    	
+    	saveMaze.setSize(menuWidth, menuHeight);
+    	saveMaze.setLocation(350, 525);
+    	this.add(saveMaze);
+    	
+    	saveMaze.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+				boolean firstColExists = false;
+				for(int r=0; r<rows-1; r++){
+						if(map[0][r] == 1){
+							firstColExists = true;
+						}
+				}
+				if(firstColExists == false){
+             		JOptionPane.showMessageDialog(null,"Please add valid tile in first column!","Invalid Board",JOptionPane.INFORMATION_MESSAGE);
+				}
+				else{
+					saveMap();
+					new MainMenu();
+					dispose();
+				}
+				
+				
+				
+			}    		
+    		
+    	});
+
+    	
     	getMapList();
     	getLevelChoice();
     	if(level != -1){
@@ -28,7 +76,7 @@ public class MazeMapMaker extends JFrame{
     		//EDIT A CURRENTLY EXISTING MAP
 	        loadMap();
 	        this.setResizable(false);
-	        this.setSize((columns*panelSize)+50, (rows*panelSize)+70);
+	        this.setSize((columns*panelSize)+50, (rows*panelSize)+80);
 	        this.setTitle("Maze Map Maker");
 	        this.setLayout(null);
 	        
@@ -41,13 +89,20 @@ public class MazeMapMaker extends JFrame{
 	        
 	        this.setLocationRelativeTo(null);
 	        
-	        for(int y = 0; y < columns; y++){
+	        for(int y = 0; y < columns; y++){	        	
 	            for(int x = 0; x < rows; x++){
+	            	
+	            	
 	            	MapMakerTile tile = new MapMakerTile(x, y);
+
+	            	
 	                tile.setSize(panelSize-1, panelSize-1);
 	                tile.setLocation((x*panelSize)+23, (y*panelSize)+25);
+	                
+	                
+	                
 	                if(map[x][y] == 0){
-	                    tile.setBackground(Color.GRAY);
+	                    tile.setBackground(Color.BLACK);
 	                }else{
 	                    tile.setBackground(Color.WHITE);
 	                }
@@ -57,6 +112,8 @@ public class MazeMapMaker extends JFrame{
 	                this.add(tile);
 	            }
 	        }
+	        
+	        
 	        this.setVisible(true);
     	}else{
     		new MainMenu();
@@ -65,10 +122,10 @@ public class MazeMapMaker extends JFrame{
     
     public void getMapList(){
     	for(int i = 0; i < 99; i++){
-    		File map = new File("./Level "+i+".map");
+    		File map = new File("./Map "+i);
     		if(map.exists()){
-    			System.out.println("Level "+i+" exists");
-    			mapList.add("Level "+i+".map");
+    			System.out.println("Map "+i+" exists");
+    			mapList.add("Map "+i);
     			levelsExistAlready = true;
     		}
     	}
@@ -78,11 +135,20 @@ public class MazeMapMaker extends JFrame{
     	if(levelsExistAlready){
 	    	String maps[] = new String[99];
 	    	mapList.toArray(maps);
-	    	maps[mapList.size()] = "New level";
-	    	String choice = (String)JOptionPane.showInputDialog(null, "Which level would you like to play?", "Maze Level Selector", JOptionPane.QUESTION_MESSAGE, null, maps, maps[0]);
+	    	
+	    	
+	    	maps[mapList.size()] = "New Map";
+	    	
+	    	
+	    	String choice = (String)JOptionPane.showInputDialog(null, "Which map would you like to play?", "Maze Map Selector", JOptionPane.QUESTION_MESSAGE, null, maps, maps[0]);
+	    	
+	    	
 	    	System.out.println(choice);
-	    	if(choice != null && !choice.equals("New level")){
-	    		level = Integer.parseInt((choice.replace("Level ", "").replace(".map", "")));
+	    	
+	    	
+	    	
+	    	if(choice != null && !choice.equals("New Map")){
+	    		level = Integer.parseInt((choice.replace("Map ", "")));
 	    	}else if(choice == null){
 	    		level = -1;
 	    	}else{
@@ -93,7 +159,7 @@ public class MazeMapMaker extends JFrame{
     
     public void saveMap(){
         try{
-        PrintWriter writer = new PrintWriter("Level "+level+".map", "UTF-8");
+        PrintWriter writer = new PrintWriter("Map "+level, "UTF-8");
         for(int y = 0; y < columns; y++){
             for(int x = 0; x < rows; x++){
                 writer.print(map[x][y]);
@@ -108,7 +174,7 @@ public class MazeMapMaker extends JFrame{
     
     public void loadMap(){
         try{
-            BufferedReader br = new BufferedReader(new FileReader("Level "+level+".map"));
+            BufferedReader br = new BufferedReader(new FileReader("Map "+level));
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
 

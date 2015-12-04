@@ -21,10 +21,11 @@ public class MainMenu {
     JButton Start = new JButton("Play");
     JButton Exit = new JButton("Exit");
     JButton MapMaker = new JButton("Map Maker");
-    ImageIcon picture = new ImageIcon("res/Images/maze.png");
+    ImageIcon picture = new ImageIcon("res/Images/MazePicture.png");
     JLabel imageLabel = new JLabel(picture);
     
     ArrayList<String> mapList = new ArrayList<String>();
+ 
     //dropdown list of the levels of existing maps
     JComboBox<String> lvlList;
     
@@ -105,10 +106,10 @@ public class MainMenu {
 
     public void getMapList(){
     	for(int i = 0; i < 99; i++){
-    		File map = new File("./Level "+i+".map");
+    		File map = new File("./Map "+i);
     		if(map.exists()){
-    			System.out.println("Level "+i+" exists");
-    			mapList.add("Level "+i+".map");
+    			System.out.println("Map "+i+" exists");
+    			mapList.add("Map "+i);
     			levelsExistAlready = true;
     		}
     	}
